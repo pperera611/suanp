@@ -1,25 +1,38 @@
-import logo from './logo.svg';
+import { useState } from 'react';
 import './App.css';
+import Login from "./pages/Login";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  
+  const [isLogged, setIsLogged] = useState(false);
+   
+  const registerLogin = (email) =>{
+    if (email != null)
+       setIsLogged(true)
+  }
+  
+  const theme = createTheme(
+    {
+      palette: {
+        primary: {
+          main: '#e53935',
+        },
+        secondary: {
+          main: '#ef5350',
+        },
+      },
+    }
   );
+
+  return (
+    <>
+     <ThemeProvider theme={theme}>
+      {!isLogged && <Login onLogged={registerLogin}/>}
+      {isLogged && <p>Entraste</p>} 
+    </ThemeProvider>
+    </>
+    );
 }
 
 export default App;
