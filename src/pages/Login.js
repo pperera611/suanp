@@ -37,18 +37,16 @@ export default function Login(props) {
     
 
     const handleSubmit = (event) => {
-    event.preventDefault();
-    
-        if (isValidEmail && isValidPass) {
-            const data = new FormData(event.currentTarget);
-            console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-            });
-            props.onLogged(email);
+      event.preventDefault();
 
-        }
-
+      if (isValidEmail && isValidPass) {
+        const data = new FormData(event.currentTarget);
+        console.log({
+          email: data.get("email"),
+          password: data.get("password"),
+        });
+        props.onLogged(email);
+      }
     };
 
   return (

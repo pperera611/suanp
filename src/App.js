@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './App.css';
 import Login from "./pages/Login";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   
@@ -27,12 +28,12 @@ function App() {
 
   return (
     <>
-     <ThemeProvider theme={theme}>
-      {!isLogged && <Login onLogged={registerLogin}/>}
-      {isLogged && <p>Entraste</p>} 
-    </ThemeProvider>
+      <ThemeProvider theme={theme}>
+        {!isLogged && <Login onLogged={registerLogin} />}
+        {isLogged  && <Dashboard/>}
+      </ThemeProvider>
     </>
-    );
+  );
 }
 
 export default App;
