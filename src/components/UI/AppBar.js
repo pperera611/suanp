@@ -1,18 +1,19 @@
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
 import MenuIcon from '@mui/icons-material/Menu';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import Button from '@mui/material/Button'; 
+import useAuth from "../../hooks/use-auth";
 
 const AppBar = (props) => {
-  
+
+  const {onLogout} = useAuth();
+
   return (
     <Toolbar
       sx={{
         pr: "24px", // keep right padding when drawer closed
-      }}
-    >
+      }}    >
       <IconButton
         edge="start"
         color="inherit"
@@ -34,11 +35,9 @@ const AppBar = (props) => {
       >
         SUANP
       </Typography>
-      <IconButton color="inherit">
-        <Badge badgeContent={4} color="secondary">
-          <NotificationsIcon />
-        </Badge>
-      </IconButton>
+      
+      <Button color="inherit" onClick={onLogout}>Logout</Button>
+
     </Toolbar>
   );
 };

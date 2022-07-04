@@ -9,14 +9,19 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import useInput from "../hooks/use-input";
+import useAuth from "../hooks/use-auth";
 import CopyRight from '../components/UI/CopyRight';
+import { useNavigate, Navigate } from 'react-router-dom';
 
 
 export default function Login(props) {
   
+    const navigate = useNavigate();
     const isEmail = value => value.includes("@");
     const isPassword = value => value.length > 6;
-   
+    const {token, onLogin} = useAuth();
+
+
     const {
       value: email,
       isValid: isValidEmail,
@@ -34,9 +39,17 @@ export default function Login(props) {
       inputBlurHandler: handleBlurPass,
       //reset: resetFirstName,
     } = useInput(isPassword);
-    
 
-    const handleSubmit = (event) => {
+
+    console.log(token);
+
+    if (token!==null) {
+      console.log(token);
+      return <Navigate to="/" replace />;
+    }
+
+    
+     const handleSubmit = (event) => {
       event.preventDefault();
 
       if (isValidEmail && isValidPass) {
@@ -44,8 +57,11 @@ export default function Login(props) {
         console.log({
           email: data.get("email"),
           password: data.get("password"),
-        });
-        props.onLogged(email);
+        })
+       
+        onLogin();
+        navigate('/');
+               
       }
     };
 

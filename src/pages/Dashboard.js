@@ -9,6 +9,7 @@ import CopyRight from '../components/UI/CopyRight';
 import DrawerWrapper from '../components/UI/DrawerWrapper';
 import AppBarWrapper from "../components/UI/AppBarWrapper";
 import AppBar from '../components/UI/AppBar';
+import Afiliados from './Afiliados';
 
 export default function Dashboard() {
     const [open, setOpen] = useState(true);
@@ -38,12 +39,14 @@ export default function Dashboard() {
             height: "100vh",
             overflow: "auto",
           }}
-        >            
+        >          
+          
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          <Afiliados/>  
+           
 
-
-            
           </Container>
+          
           <CopyRight sx={{ pt: 8 }} />
         </Box>
       </Box>
