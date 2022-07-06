@@ -3,14 +3,15 @@ import './App.css';
 import Login from "./pages/Login";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Dashboard from './pages/Dashboard';
-import { Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './store/auth-context';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import useAuth from './hooks/use-auth';
 
 
+function App(props) {
 
-function App() {
-
-
+  const authCtx = useAuth();
+  console.log(authCtx);
+  
   const theme = createTheme(
     {
       palette: {
@@ -26,19 +27,17 @@ function App() {
 
     
    return (
-    <>
-      <ThemeProvider theme={theme}>
-        <AuthProvider>
-        <Routes>
-          
-          <Route path="/login" element ={<Login/>}/>
-          <Route path="/" element = {<Dashboard/>}/>
-                    
-        </Routes>
-        </AuthProvider>
-      </ThemeProvider>
-    </>
-  );
+     <>
+        <ThemeProvider theme={theme}>
+           <Routes>
+             <Route path="/login" element= {!authCtx.isLoggedIn ? <Login/>: <Navigate to="/" replace />} />
+             <Route path="/" element={authCtx.isLoggedIn ? <Dashboard/> : <Navigate to="/login"/>} />
+             <Route path="*" element={<Navigate to="/" replace />}/>
+           </Routes>
+         </ThemeProvider>
+       
+     </>
+   );
 }
 
 export default App;

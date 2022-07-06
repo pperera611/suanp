@@ -15,6 +15,7 @@ import LayersIcon from "@mui/icons-material/Layers";
 import ListItemIcon from "@mui/material/ListItemIcon";
 
 const Sidebar = (props) => {
+  
   return (
     <>
       <Toolbar
@@ -25,20 +26,20 @@ const Sidebar = (props) => {
           px: [1],
         }}
       >
-        <IconButton onClick={props.onClick}>
+        <IconButton onClick={props.onToogle}>
           <ChevronLeftIcon />
         </IconButton>
       </Toolbar>
 
       <Divider></Divider>
       <List component="nav">
-        <ListItemButton>
+        <ListItemButton onClick={() => props.onSelectOption(1)}>
           <ListItemIcon>
             <PeopleIcon />
           </ListItemIcon>
           <ListItemText primary="Afiliados" />
         </ListItemButton>
-        <ListItemButton>
+        <ListItemButton onClick={() => props.onSelectOption(2)}>
           <ListItemIcon>
             <DashboardIcon />
           </ListItemIcon>

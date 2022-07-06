@@ -2,7 +2,7 @@
 import { useContext } from "react";
 import AuthContext from '../store/auth-context';
 
-const useAuth = () => {
+const useAuth = (props) => {
     return useContext(AuthContext);
   };
 

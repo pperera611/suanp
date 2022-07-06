@@ -18,7 +18,7 @@ const AppBar = (props) => {
         edge="start"
         color="inherit"
         aria-label="open drawer"
-        onClick={props.onClick}
+        onClick={props.onToogle}
         sx={{
           marginRight: "36px",
           ...(props.open && { display: "none" }),

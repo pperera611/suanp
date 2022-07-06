@@ -11,21 +11,31 @@ import AppBarWrapper from "../components/UI/AppBarWrapper";
 import AppBar from '../components/UI/AppBar';
 import Afiliados from './Afiliados';
 
-export default function Dashboard() {
+export default function Dashboard(props) {
+    
+   
     const [open, setOpen] = useState(true);
+    const [opcion, setOpcion] = useState(1);
+    
     const toggleDrawer = () => {
       setOpen(!open);
     };
   
+
+    const handleSelectNav = (opc) =>{
+        setOpcion(opc);
+    }
+
+
     return (
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
         
         <AppBarWrapper position="absolute" open={open}>
-          <AppBar onClick={toggleDrawer} />
+          <AppBar onToogle={toggleDrawer} />
         </AppBarWrapper>
         <DrawerWrapper variant="permanent" open={open}>
-          <Sidebar onClick={toggleDrawer}/>
+          <Sidebar onToogle={toggleDrawer} onSelectOption={handleSelectNav}/>
         </DrawerWrapper>
         
         <Box
@@ -41,8 +51,8 @@ export default function Dashboard() {
           }}
         >          
           
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-          <Afiliados/>  
+          <Container maxWidth="lg" sx={{ mt: 8, mb: 4 , ml: -1}}>
+          {opcion===1 && <Afiliados/>}  
            
 
           </Container>
