@@ -33,7 +33,7 @@ const AppBar = (props) => {
         noWrap
         sx={{ flexGrow: 1 }}
       >
-        SUANP
+        MYAPP
       </Typography>
       
       <Button color="inherit" onClick={onLogout}>Logout</Button>

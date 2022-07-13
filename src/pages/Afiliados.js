@@ -4,14 +4,14 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import TabPanel from "../components/UI/TabPanel";
-
+import AfiliadosActivos from "../components/Afiliados/AfiliadosActivos";
 
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.number.isRequired,
   value: PropTypes.number.isRequired,
 };
-
+ 
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
@@ -31,13 +31,13 @@ export default function Afiliados() {
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="Item One" {...a11yProps(0)} />
+          <Tab label="Afiliados Activos" {...a11yProps(0)} />
           <Tab label="Item Two" {...a11yProps(1)} />
           <Tab label="Item Three" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        Item One
+        <AfiliadosActivos/>
       </TabPanel>
       <TabPanel value={value} index={1}>
         Item Two

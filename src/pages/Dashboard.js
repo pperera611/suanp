@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {useState } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -10,13 +10,17 @@ import DrawerWrapper from '../components/UI/DrawerWrapper';
 import AppBarWrapper from "../components/UI/AppBarWrapper";
 import AppBar from '../components/UI/AppBar';
 import Afiliados from './Afiliados';
+import {useNavigate } from 'react-router-dom';
 
 export default function Dashboard(props) {
     
    
     const [open, setOpen] = useState(true);
-    const [opcion, setOpcion] = useState(1);
+    const [opcion, setOpcion] = useState(props.opc);
+    const navigate = useNavigate();
     
+    console.log(opcion);
+
     const toggleDrawer = () => {
       setOpen(!open);
     };
@@ -24,6 +28,10 @@ export default function Dashboard(props) {
 
     const handleSelectNav = (opc) =>{
         setOpcion(opc);
+        if (opc===1)
+          navigate("/afiliados");
+        else
+          navigate("/");
     }
 
 
