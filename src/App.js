@@ -10,7 +10,7 @@ import useAuth from './hooks/use-auth';
 function App(props) {
 
   const authCtx = useAuth();
-  console.log(authCtx);
+  //console.log(authCtx);
   
   const theme = createTheme(
     {

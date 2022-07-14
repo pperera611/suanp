@@ -47,14 +47,11 @@ export default function Login(props) {
       event.preventDefault();
 
       if (isValidEmail && isValidPass) {
-        const data = new FormData(event.currentTarget);
-        console.log({
-          email: data.get("email"),
-          password: data.get("password"),
-        })
-       ctx.onLogin();
-       navigate('/');
-               
+        //const data = new FormData(event.currentTarget);
+        //console.log({email: data.get("email"), password: data.get("password"),});
+        ctx.onLogin();
+        navigate('/');
+            
       }
     };
 

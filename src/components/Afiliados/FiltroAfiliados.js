@@ -8,9 +8,10 @@ import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
-import Autocomplete from '@mui/material/Autocomplete';
+import Autocomplete from "@mui/material/Autocomplete";
+import { useEffect, useState } from "react";
 
-const localidades = ["Montevideo","Colonia","Paysandu"];
+const localidades = ["Montevideo", "Colonia", "Paysandu"];
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -21,15 +22,64 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const FiltroAfiliados = (props) => {
+  
+  const [filtros, setFiltros] = useState({nroSocio: "" , nombre:"" , apellido:"", grado:"", ua: "", localidad: ""});
 
-    const handlerChangeNroSocio = (event) =>{
-        props.onChangeFilter("nro-socio",event.target.value);
-        console.log("entro change nro socio");
-    }
-    const handlerChangeNombre = (event) =>{
-      props.onChangeFilter("nombre",event.target.value);
-      console.log("entro change nombre");
-  }
+  const handlerChangeNroSocio = (event) => {
+    const nroSocio = event.target.value;
+    //console.log(nroSocio);
+    setFiltros((prevState) => {
+      return {...prevState, nroSocio: nroSocio};
+    })
+  };
+
+  const handlerChangeNombre = (event) => {
+    const nombre = event.target.value;
+    setFiltros((prevState) => {
+      return {...prevState,nombre: nombre};
+    })
+  };
+
+  const handlerChangeApellido = (event) => {
+    const apellido = event.target.value;
+    setFiltros((prevState) => {
+      return {...prevState,apellido: apellido};
+    })
+  };
+
+  const handlerChangeLocalidad = (event) => {
+    const localidad = event.target.value;
+    setFiltros((prevState) => {
+      return {...prevState,localidad: localidad};
+    })
+  };
+
+  const handlerChangeGrado = (event) => {
+    const grado = event.target.value;
+    setFiltros((prevState) => {
+      return {...prevState,grado: grado};
+    })
+  };
+
+  const handlerChangeUA = (event) => {
+    const ua = event.target.value;
+    setFiltros((prevState) => {
+      return {...prevState,ua: ua};
+    })
+  };
+
+
+
+
+ //const filtrar = props.onChangeFilter;
+
+const {onChangeFilter} = props
+
+ useEffect(()=>{
+  const filtro_copia = {...filtros}
+  //filtrar(filtro_copia);
+  props.onChangeFilter(filtro_copia);
+ },[filtros, onChangeFilter])
 
 
   return (
@@ -43,6 +93,7 @@ const FiltroAfiliados = (props) => {
             <Grid item xs={2}>
               <Item>
                 <TextField
+                  value={filtros.nroSocio}
                   id="nro-socio"
                   label="Nro de Socio"
                   variant="outlined"
@@ -55,6 +106,7 @@ const FiltroAfiliados = (props) => {
             <Grid item xs={3}>
               <Item>
                 <TextField
+                  value={filtros.nombre}
                   id="nombre"
                   label="Nombre"
                   variant="outlined"
@@ -67,25 +119,28 @@ const FiltroAfiliados = (props) => {
             <Grid item xs={4}>
               <Item>
                 <TextField
+                  value={filtros.apellido}
                   id="apellido"
                   label="Apellido"
                   variant="outlined"
                   size="small"
                   fullWidth
+                  onChange={handlerChangeApellido}
                 />
               </Item>
             </Grid>
             <Grid item xs={3}>
               <Item>
                 <Autocomplete
+                  
                   disablePortal
                   id="localidad"
                   options={localidades}
-                  
                   size="small"
                   fullWidth
+                  onChange={handlerChangeLocalidad}
                   renderInput={(params) => (
-                    <TextField {...params} label="Localidad" />
+                    <TextField {...params} label="Localidad" value={filtros.localidad}/>
                   )}
                 />
               </Item>
@@ -93,11 +148,13 @@ const FiltroAfiliados = (props) => {
             <Grid item xs={6}>
               <Item>
                 <TextField
+                  value={filtros.grado}
                   id="grado"
                   label="Grado"
                   variant="outlined"
                   size="small"
                   fullWidth
+                  onChange={handlerChangeGrado}
                 />
               </Item>
             </Grid>
@@ -109,6 +166,7 @@ const FiltroAfiliados = (props) => {
                   variant="outlined"
                   size="small"
                   fullWidth
+                  onChange={handlerChangeUA}
                 />
               </Item>
             </Grid>

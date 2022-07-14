@@ -19,7 +19,7 @@ export default function Dashboard(props) {
     const [opcion, setOpcion] = useState(props.opc);
     const navigate = useNavigate();
     
-    console.log(opcion);
+    //console.log(opcion);
 
     const toggleDrawer = () => {
       setOpen(!open);

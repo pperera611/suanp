@@ -60,29 +60,30 @@ const DUMMY_DATA = [
       grado: "ADMINISTRATIVO IV",
       ua: "UNIDAD FACTURACION Y CREDITO"
     }
-]
+];
 
 
 const AfiliadosActivos = (props) =>{
 
   const [list, setList] = useState(DUMMY_DATA);
-  const [filtroSocio, setFiltroSocio] = useState("");
-  const [filtroNombre, setFiltroNombre] = useState("");
+  
 
-  const handlerfilterList = (tipo, value) =>{
-     
-    if (tipo==="nro-socio"){
-      setFiltroSocio(value.toString());
-      console.log(filtroSocio);
-    }
-    if (tipo==="nombre"){
-      setFiltroNombre(value);
-      console.log(filtroNombre);
-    }
+  const handlerfilterList = (filtros) =>{ 
 
-    const listaFiltrada = DUMMY_DATA.filter(afiliado=> afiliado["nroSocio"].toString().includes(filtroSocio) && 
-                                                     afiliado["nombre"].includes(filtroNombre));
+      
+    const filtroSocio = filtros.nroSocio;
+    const filtroNombre = filtros.nombre;
+    const filtroApellido = filtros.apellido;
+    const filtroGrado = filtros.grado;
+    const filtroUA = filtros.ua;
+    const filtroLocalidad = filtros.localidad;
     
+    const listaFiltrada = DUMMY_DATA.filter(afiliado=> afiliado["nroSocio"].toString().includes(filtroSocio) && 
+                                                     afiliado["nombre"].includes(filtroNombre) &&
+                                                     afiliado["apellido"].includes(filtroApellido) &&
+                                                     afiliado["grado"].includes(filtroGrado) &&
+                                                     afiliado["ua"].includes(filtroUA) );
+    //falta localidad Y falta que no tenga en cuenta maysucula y minuscula
     setList(listaFiltrada);  
     console.log(listaFiltrada);
   } 
