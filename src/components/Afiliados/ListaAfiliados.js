@@ -7,6 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import IconsOptions from "../UI/IconsOptions"; 
 
 const columns = [
   { id: 'nombre', label: 'Nombre', minWidth: 100 },
@@ -15,10 +16,14 @@ const columns = [
   { id: 'grado', label: 'Grado', minWidth: 170},
   { id: 'ua', label: 'Unidad Administrativa', minWidth: 170},
   { id: 'localidad', label: 'Localidad', minWidth: 100, align: 'right'},
+  
+
+  
 ];
 
 export default function ListaAfiliados(props) {
 
+  
   
   const rows = props.lista;
     
@@ -34,11 +39,13 @@ export default function ListaAfiliados(props) {
     setPage(0);
   };
 
+ 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+    <Paper sx={{ width: "100%", overflow: "hidden" }}>
       <TableContainer sx={{ maxHeight: 440 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
+           
             <TableRow>
               {columns.map((column) => (
                 <TableCell
@@ -49,10 +56,18 @@ export default function ListaAfiliados(props) {
                   {column.label}
                 </TableCell>
               ))}
+              <TableCell
+                  key="opciones"
+                  align="center"
+                  style={{ minWidth: 60 }}
+                >
+                  Opciones
+                </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            {rows
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
@@ -60,12 +75,14 @@ export default function ListaAfiliados(props) {
                       const value = row[column.id];
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === 'number'
+                          {column.format && typeof value === "number"
                             ? column.format(value)
                             : value}
                         </TableCell>
                       );
                     })}
+                    <TableCell><IconsOptions/></TableCell>
+                    
                   </TableRow>
                 );
               })}

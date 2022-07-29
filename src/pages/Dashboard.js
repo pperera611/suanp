@@ -59,7 +59,7 @@ export default function Dashboard(props) {
           }}
         >          
           
-          <Container maxWidth="lg" sx={{ mt: 8, mb: 4 , ml: -1}}>
+          <Container maxWidth sx={{ mt: 8, mb: 4 , ml: -1}}>
           {opcion===1 && <Afiliados/>}  
            
 

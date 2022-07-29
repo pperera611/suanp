@@ -8,10 +8,11 @@ import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
-import { useEffect, useState } from "react";
+//import Autocomplete from "@mui/material/Autocomplete";
+import { useEffect, useState} from "react";
+import SelectLocalidad from "../UI/SelectLocalidad";
 
-const localidades = ["Montevideo", "Colonia", "Paysandu"];
+//const localidades = ["Montevideo", "Colonia", "Paysandu"];
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -24,6 +25,7 @@ const Item = styled(Paper)(({ theme }) => ({
 const FiltroAfiliados = (props) => {
   
   const [filtros, setFiltros] = useState({nroSocio: "" , nombre:"" , apellido:"", grado:"", ua: "", localidad: ""});
+
 
   const handlerChangeNroSocio = (event) => {
     const nroSocio = event.target.value;
@@ -47,8 +49,14 @@ const FiltroAfiliados = (props) => {
     })
   };
 
-  const handlerChangeLocalidad = (event) => {
-    const localidad = event.target.value;
+  const handlerChangeLocalidad = (value) => {
+    let localidad;
+    if (value ===null){
+      localidad = "";
+    }
+    else{
+       localidad = value;
+    }
     setFiltros((prevState) => {
       return {...prevState,localidad: localidad};
     })
@@ -131,18 +139,7 @@ const FiltroAfiliados = (props) => {
             </Grid>
             <Grid item xs={3}>
               <Item>
-                <Autocomplete
-                  
-                  disablePortal
-                  id="localidad"
-                  options={localidades}
-                  size="small"
-                  fullWidth
-                  onChange={handlerChangeLocalidad}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Localidad" value={filtros.localidad}/>
-                  )}
-                />
+                <SelectLocalidad onSelected={handlerChangeLocalidad}/>
               </Item>
             </Grid>
             <Grid item xs={6}>
