@@ -46,7 +46,7 @@ export default function ListaAfiliados(props) {
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
            
-            <TableRow>
+            <TableRow key={Math.random()}>
               {columns.map((column) => (
                 <TableCell
                   key={column.id}

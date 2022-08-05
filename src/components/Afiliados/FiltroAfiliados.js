@@ -4,23 +4,11 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Grid from "@mui/material/Grid";
-import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
-//import Autocomplete from "@mui/material/Autocomplete";
 import { useEffect, useState} from "react";
 import SelectLocalidad from "../UI/SelectLocalidad";
-
-//const localidades = ["Montevideo", "Colonia", "Paysandu"];
-
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(0),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
+import Item from "../UI/Item";
 
 const FiltroAfiliados = (props) => {
   

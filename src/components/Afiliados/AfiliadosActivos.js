@@ -109,9 +109,7 @@ const AfiliadosActivos = (props) =>{
           display: 'flex',
           alignItems: 'center',
           width: 'fit-content',
-         
           borderRadius: 1,
-          
           color: 'text.secondary',
           '& svg': {
             m: 1.5,
