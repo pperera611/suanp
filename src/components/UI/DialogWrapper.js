@@ -1,30 +1,19 @@
 import * as React from 'react';
-import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
 export default function DialogWrapper(props) {
   
+  const handleClose = () => {
+    props.onCloseDialog();
+  }
 
   return (
     <div>
-     
-      <Dialog open={props.open} onClose={props.onCloseDialog}>
-        
+      <Dialog open={props.open} onClose={handleClose}>
         <DialogTitle>{props.tituloModal}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-          </DialogContentText>
-          {props.children} 
-                  
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={props.onCloseDialog}>Cancel</Button>
-          <Button onClick={props.onCloseDialog}>Subscribe</Button>
-        </DialogActions>
+        <DialogContent>{props.children}</DialogContent>
       </Dialog>
     </div>
   );

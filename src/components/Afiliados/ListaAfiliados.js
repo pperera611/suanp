@@ -97,6 +97,7 @@ export default function ListaAfiliados(props) {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        labelRowsPerPage="Filas por página"
       />
     </Paper>
   );

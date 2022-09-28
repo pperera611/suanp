@@ -89,10 +89,7 @@ const AfiliadosActivos = (props) =>{
                                                      afiliado["grado"].includes(filtroGrado) &&
                                                      afiliado["ua"].includes(filtroUA) &&
                                                      afiliado["localidad"].includes(filtroLocalidad));
-    //falta localidad
-    console.log(filtroLocalidad);
-    setList(listaFiltrada);  
-    console.log(listaFiltrada);
+
   }
   
   const handlerAddDialogOpen = () =>{

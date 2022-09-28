@@ -13,7 +13,7 @@ export default function NuevoAfiliado(props) {
 return(
     <DialogWrapper open ={props.open} tituloModal = "Nuevo Afiliado" onCloseDialog ={handleClose}>
          <Divider/>
-        <FormAfiliado/>
+        <FormAfiliado onClose={handleClose}/>
     </DialogWrapper>
 )
 
