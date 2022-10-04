@@ -3,9 +3,7 @@ import ListaAfiliados from "./ListaAfiliados";
 import NuevoAfiliado from "./NuevoAfiliado";
 import Divider from "@mui/material/Divider";
 import { useState } from "react";
-import Fab from '@mui/material/Fab';
-import AddIcon from '@mui/icons-material/Add';
-import Box from '@mui/material/Box';
+import NewExcelPDF from "../UI/NewExcelPDF";
 
 
 const DUMMY_DATA = [
@@ -98,35 +96,22 @@ const AfiliadosActivos = (props) =>{
   const handlerAddDialogClose= () =>{
     setAddAfiliado(false);
   }
+  const handlerExportExcel= () =>{
+    //falta implementacion
+  }
+  const handlerExportPDF= () =>{
+    //falta implementacion
+  }
 
-
-    return(
+    return (
       <>
-        <Box onClick={handlerAddDialogOpen} sx={{
-          display: 'flex',
-          alignItems: 'center',
-          width: 'fit-content',
-          borderRadius: 1,
-          color: 'text.secondary',
-          '& svg': {
-            m: 1.5,
-          },
-          '& hr': {
-            mx: 0.5,
-          },
-        }}
-      >
-      <Fab color="secondary" aria-label="add">
-        <AddIcon/>
+       <NewExcelPDF openAdd = {handlerAddDialogOpen} exportexcel= {handlerExportExcel} exportpdf = {handlerExportPDF}/>
         
-       </Fab>
-       </Box>
-       {addAfiliado && <NuevoAfiliado open ={addAfiliado} onCloseDialogAddAfiliado={handlerAddDialogClose}/>}
-       <Divider sx={{ my: 1 }} />
-        <FiltroAfiliados onChangeFilter = {handlerfilterList}/> 
+        {addAfiliado && ( <NuevoAfiliado open={addAfiliado} onCloseDialogAddAfiliado={handlerAddDialogClose} />)}
         <Divider sx={{ my: 1 }} />
-        <ListaAfiliados lista={list}/>
-        
+        <FiltroAfiliados onChangeFilter={handlerfilterList} />
+        <Divider sx={{ my: 1 }} />
+        <ListaAfiliados lista={list} />
       </>
     );
 
