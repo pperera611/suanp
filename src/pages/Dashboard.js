@@ -28,10 +28,14 @@ export default function Dashboard(props) {
 
     const handleSelectNav = (opc) =>{
         setOpcion(opc);
-        if (opc===1)
+        if (opc===1){
           navigate("/afiliados");
-        else
+         
+        }
+        else{
           navigate("/");
+      
+        }
     }
 
 

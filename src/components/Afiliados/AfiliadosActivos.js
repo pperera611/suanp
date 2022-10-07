@@ -2,77 +2,36 @@ import FiltroAfiliados from "./FiltroAfiliados";
 import ListaAfiliados from "./ListaAfiliados";
 import NuevoAfiliado from "./NuevoAfiliado";
 import Divider from "@mui/material/Divider";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NewExcelPDF from "../UI/NewExcelPDF";
-
-
-const DUMMY_DATA = [
-    {
-      id: 1,
-      nroSocio: 16338,
-      digitoVerificador: 6,
-      nombre: "PABLO",
-      apellido: "PERERA",
-      fechaNacimiento: "06/11/1987",
-      direccion: "Canelones 1625 / Apto 501",
-      telefono: "099340502",
-      email: "pperera611@gmail.com",
-      localidad: "MONTEVIDEO",
-      grado: "PROFESIONAL 1A",
-      ua: "UNIDAD DESARROLLO Y MANTENIMIENTO INFORMATICO"
-    },
-    {
-      id: 2,
-      nroSocio: 16123,
-      digitoVerificador: 4,
-      nombre: "ALVARO",
-      apellido: "RECOBA",
-      fechaNacimiento: "17/12/1979",
-      direccion: "8 de octubre 1899",
-      telefono: "099123456",
-      email: "chino20@gmail.com",
-      localidad: "MONTEVIDEO",
-      grado: "SUPERVISOR",
-      ua: "UNIDAD MUELLE PESQUERO"
-    },
-    {
-      id: 3,
-      nroSocio: 14456,
-      digitoVerificador: 3,
-      nombre: "LUIS",
-      apellido: "SUAREZ",
-      fechaNacimiento: "29/01/1987",
-      direccion: "Avda de los cracks 2014",
-      telefono: "099321123",
-      email: "lucho9@outlook.com",
-      localidad: "SALTO",
-      grado: "JEFE DEPARTAMENTO",
-      ua: "DEPARTAMENTO FLOTA Y DRAGADO"
-    },
-    {
-      id: 4,
-      nroSocio: 15789,
-      digitoVerificador: 2,
-      nombre: "OSCAR",
-      apellido: "MORALES",
-      fechaNacimiento: "05/08/1982",
-      direccion: "Jose Maria Ramirez 2121",
-      telefono: "099022345",
-      email: "ojota21@gmail.com",
-      localidad: "MONTEVIDEO",
-      grado: "ADMINISTRATIVO IV",
-      ua: "UNIDAD FACTURACION Y CREDITO"
-    }
-];
+import useAxios from "../../hooks/use-axios";
+import React from "react";
 
 
 const AfiliadosActivos = (props) =>{
-
-  const [list, setList] = useState(DUMMY_DATA);
+  
+  
   const [addAfiliado, setAddAfiliado] = useState(false);
+  const [data, setData] = useState([]);
+  const [listFiltrada, setListFiltrada] = useState([]); 
+  
+  const { response, loading, error } = useAxios({
+    method: 'get',
+    url: '/afiliados.json',
+    headers: JSON.stringify({ accept: '*/*' })
+    });
 
+  useEffect(() => {
+    
+    if(!error && response) {
+      setData(response);
+      setListFiltrada(response);
+    }
+ 
 
-  const handlerfilterList = (filtros) =>{ 
+ }, [response, error]); //supuestamente una vez
+
+  const handlerfilterList = (filtros) => { 
       
     const filtroSocio = filtros.nroSocio.toUpperCase();
     const filtroNombre = filtros.nombre.toUpperCase();
@@ -81,13 +40,14 @@ const AfiliadosActivos = (props) =>{
     const filtroUA = filtros.ua.toUpperCase();
     const filtroLocalidad = filtros.localidad.toUpperCase();
     
-    const listaFiltrada = DUMMY_DATA.filter(afiliado=> afiliado["nroSocio"].toString().includes(filtroSocio) && 
+    const lista_filtrada = data.filter(afiliado=> afiliado["nroSocio"].toString().includes(filtroSocio) && 
                                                      afiliado["nombre"].includes(filtroNombre) &&
                                                      afiliado["apellido"].includes(filtroApellido) &&
                                                      afiliado["grado"].includes(filtroGrado) &&
                                                      afiliado["ua"].includes(filtroUA) &&
                                                      afiliado["localidad"].includes(filtroLocalidad));
-
+   
+    setListFiltrada(lista_filtrada);
   }
   
   const handlerAddDialogOpen = () =>{
@@ -103,6 +63,15 @@ const AfiliadosActivos = (props) =>{
     //falta implementacion
   }
 
+  let mensaje;
+  if (error) {
+    mensaje = <p> Error </p>;
+  }
+  if (loading) {
+    mensaje = <p> Loading...</p>
+  }
+
+
     return (
       <>
        <NewExcelPDF openAdd = {handlerAddDialogOpen} exportexcel= {handlerExportExcel} exportpdf = {handlerExportPDF}/>
@@ -111,10 +80,12 @@ const AfiliadosActivos = (props) =>{
         <Divider sx={{ my: 1 }} />
         <FiltroAfiliados onChangeFilter={handlerfilterList} />
         <Divider sx={{ my: 1 }} />
-        <ListaAfiliados lista={list} />
+        
+        {loading || error ? mensaje : <ListaAfiliados lista={listFiltrada} />}
+        
       </>
     );
 
 };
 
-export default AfiliadosActivos;
+export default (AfiliadosActivos);

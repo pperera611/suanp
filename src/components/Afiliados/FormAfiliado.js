@@ -1,5 +1,5 @@
-import { useForm, Controller } from "react-hook-form";
-import React from "react";
+import { useForm, Controller} from "react-hook-form";
+import { useState, useEffect } from "react";
 import TextField from '@mui/material/TextField';
 import Grid from "@mui/material/Grid";
 import Item from "../UI/Item"
@@ -8,50 +8,75 @@ import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Autocomplete from '@mui/material/Autocomplete';
-
-
-const grados = [
-  { name: 'PROFESIONAL 1A', _id: 1 },
-  { name: 'ADMINISTRATIVO IV', _id: 2 },
-  { name: 'GERENTE GENERAL', _id: 3 },
-  { name: 'JEFE DE DEPARTAMENTO', _id: 4 } ];
-
-const localidades = [
-  { name: "MONTEVIDEO", _id: 1 },
-  { name: "COLONIA", _id: 2 },
-  { name: "PAYSANDU", _id: 3 },
-  { name: "SALTO", _id: 4 },
-];
-
-
-
-
+import useAxios from "../../hooks/use-axios";
 
 //https://www.paradigmadigital.com/dev/desarrollo-formularios-react/
-    const patterns = { nombre: /^[A-Za-z]+$/i,
-                       mail:/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
-                       telefono: /^[0-9]+$/i,
-                       nroSocio: /^[0-9]+$/i
-                     };
+const patterns = { 
+  nombre: /^[A-Za-z]+$/i,
+  mail:/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+  telefono: /^[0-9]+$/i,
+  nroSocio: /^[0-9]+$/i
+};
 
-    const messages = {
-      required: "Este campo es obligatorio",
-      nroSocio: "El número de socio introducido no es el correcto",
-      nombre: "Debes introducir una cadena de texto correcta",
-      mail: "Debes introducir un correo valido",
-      telefono: "Debes introducir un número de telefono"
-     };
+const messages = {
+  required: "Este campo es obligatorio",
+  nroSocio: "El número de socio introducido no es el correcto",
+  nombre: "Debes introducir una cadena de texto correcta",
+  mail: "Debes introducir un correo valido",
+  telefono: "Debes introducir un número de telefono"
+};
 
 export default function FormAfiliado(props) {
   
+  const [grados, setGrados] = useState([]);
+  const [localidades, setLocalidades] = useState([]);
+ 
+  const dataGrados  = useAxios({
+    method: 'get',
+    url: '/grados.json',
+    headers: JSON.stringify({ accept: '*/*' })
+  });
+  const dataLocalidades  = useAxios({
+    method: 'get',
+    url: '/localidades.json',
+    headers: JSON.stringify({ accept: '*/*' })
+  });
   
+  useEffect(() => {
+    
+    if(!dataGrados.error && dataGrados.response) {
+      setGrados(dataGrados.response);
+    }
+  }, [dataGrados.response, dataGrados.error]); //supuestamente una vez
   
+  useEffect(() => {
+    
+    if(!dataLocalidades.error && dataLocalidades.response) {
+      setLocalidades(dataLocalidades.response);
+    }
+  }, [dataLocalidades.response, dataLocalidades.error]); //supuestamente una vez
   
+
   const {register, control, handleSubmit, formState: { errors } } = useForm({mode: "onBlur"});
   
   
 
     const onSubmit = (userInfo) => {
+      
+      
+      // const dataAfiliados  = useAxios({
+      //   method: 'get',
+      //   url: '/afiliados.json',
+      //   headers: JSON.stringify({ accept: '*/*' }),
+      //   body: JSON.stringify({
+      //     userId: 1,
+      //     id: 19392,
+      //     title: 'title',
+      //     body: 'Sample text',
+      // }),
+      // });
+      
+
       console.log(userInfo);
     };
 
@@ -191,7 +216,7 @@ export default function FormAfiliado(props) {
                 <Controller
                   control={control}
                   name="grado"
-                  defaultValue={grados[0]}
+                  defaultValue={null}
                   render={({ field: { onChange, value } }) => (
                     <Autocomplete
                       options={grados}
@@ -221,7 +246,7 @@ export default function FormAfiliado(props) {
                 <Controller
                   control={control}
                   name="localidad"
-                  defaultValue={localidades[0]}
+                  defaultValue={null}
                   render={({ field: { onChange, value } }) => (
                     <Autocomplete
                       options={localidades}
