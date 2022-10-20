@@ -6,7 +6,9 @@ import { useEffect, useState } from "react";
 import NewExcelPDF from "../UI/NewExcelPDF";
 import useAxios from "../../hooks/use-axios";
 import React from "react";
-
+import * as XLSX from 'xlsx/xlsx.mjs';
+import jsPDF from 'jspdf'
+import 'jspdf-autotable'
 
 const AfiliadosActivos = (props) =>{
   
@@ -20,15 +22,22 @@ const AfiliadosActivos = (props) =>{
     url: '/afiliados.json',
     headers: JSON.stringify({ accept: '*/*' })
     });
-
+  
+    
   useEffect(() => {
     
     if(!error && response) {
-      setData(response);
-      setListFiltrada(response);
+      const afiliados = []
+      for(let i in response)
+        afiliados.push(response[i]);
+
+      setData(afiliados);
+      setListFiltrada(afiliados);
+      //console.log("entra");
+      
     }
  
-
+    //console.log(response);
  }, [response, error]); //supuestamente una vez
 
   const handlerfilterList = (filtros) => { 
@@ -39,7 +48,7 @@ const AfiliadosActivos = (props) =>{
     const filtroGrado = filtros.grado.toUpperCase();
     const filtroUA = filtros.ua.toUpperCase();
     const filtroLocalidad = filtros.localidad.toUpperCase();
-    
+        
     const lista_filtrada = data.filter(afiliado=> afiliado["nroSocio"].toString().includes(filtroSocio) && 
                                                      afiliado["nombre"].includes(filtroNombre) &&
                                                      afiliado["apellido"].includes(filtroApellido) &&
@@ -48,6 +57,7 @@ const AfiliadosActivos = (props) =>{
                                                      afiliado["localidad"].includes(filtroLocalidad));
    
     setListFiltrada(lista_filtrada);
+
   }
   
   const handlerAddDialogOpen = () =>{
@@ -57,10 +67,50 @@ const AfiliadosActivos = (props) =>{
     setAddAfiliado(false);
   }
   const handlerExportExcel= () =>{
-    //falta implementacion
+    
+    const workSheet=XLSX.utils.json_to_sheet(listFiltrada)
+      const workBook=XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(workBook,workSheet,"afiliados")
+      //Buffer
+      //let buf=XLSX.write(workBook,{bookType:"xlsx",type:"buffer"})
+      //Binary string
+      XLSX.write(workBook,{bookType:"xlsx",type:"binary"})
+      //Download
+      XLSX.writeFile(workBook,"Afiliados.xlsx")
+    
+  
   }
   const handlerExportPDF= () =>{
-    //falta implementacion
+
+    const doc = new jsPDF('landscape','pt','a2');
+    doc.text("Afiliados", 20, 20)
+    doc.autoTable({
+      theme: "grid",
+      startY: 25,
+    tableWidth: 'auto',
+    columnWidth: 'auto',
+    styles: { overflow: '', cellWidth: 'wrap' },
+    // Override the default above for the text column
+    columnStyles: { text: { cellWidth: 'wrap' } },
+      
+      //hay que elegir bien las columnas porque se sale de la pagina
+      columns: [{header:"Apellido", dataKey:"apellido"},
+                //{header:"Digito Verificador", dataKey:"digitoVerificador"},
+                {header:"Direccion", dataKey:"direccion"},
+                {header:"Email", dataKey:"email"},
+                {header:"Fecha Nac.", dataKey:"fechaNacimiento"},
+                {header:"Grado", dataKey:"grado"},
+                //{header:"Identificador", dataKey:"id"},
+                {header:"Localidad", dataKey:"localidad"},
+                {header:"Nombre", dataKey:"nombre"},
+                {header:"Nro Socio", dataKey:"nroSocio"},
+                {header:"Telefono", dataKey:"telefono"},
+                {header:"Unidad Administrativa", dataKey:"ua"}],
+       
+      body: listFiltrada
+    })
+    doc.save('Afiliados.pdf')
+  
   }
 
   let mensaje;

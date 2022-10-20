@@ -9,6 +9,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import IconsOptions from "../UI/IconsOptions"; 
 
+
 const columns = [
   { id: 'nombre', label: 'Nombre', minWidth: 100 },
   { id: 'apellido', label: 'Apellido', minWidth: 100 },
@@ -17,16 +18,18 @@ const columns = [
   { id: 'ua', label: 'Unidad Administrativa', minWidth: 170},
   { id: 'localidad', label: 'Localidad', minWidth: 100, align: 'right'},
   
-
-  
 ];
 
 export default function ListaAfiliados(props) {
 
-  
-  
   const rows = props.lista;
-    
+  /*
+  const rows = [];
+  for(let i in props.lista)
+  rows.push(props.lista[i]);
+ */
+
+     
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(20);
 
@@ -39,10 +42,11 @@ export default function ListaAfiliados(props) {
     setPage(0);
   };
 
- 
+ //console.log("lista: "+rows);
+
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
+      <TableContainer sx={{ }}> {/*maxHeight: 440*/} 
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
            
@@ -70,15 +74,17 @@ export default function ListaAfiliados(props) {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (
+                        
                         <TableCell key={column.id} align={column.align}>
                           {column.format && typeof value === "number"
                             ? column.format(value)
                             : value}
                         </TableCell>
+                        
                       );
                     })}
                     <TableCell><IconsOptions/></TableCell>

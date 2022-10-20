@@ -6,7 +6,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import { useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import SelectLocalidad from "../UI/SelectLocalidad";
 import Item from "../UI/Item";
 
@@ -17,7 +17,6 @@ const FiltroAfiliados = (props) => {
 
   const handlerChangeNroSocio = (event) => {
     const nroSocio = event.target.value;
-    //console.log(nroSocio);
     setFiltros((prevState) => {
       return {...prevState, nroSocio: nroSocio};
     })
@@ -65,16 +64,11 @@ const FiltroAfiliados = (props) => {
   };
 
 
-
-
- //const filtrar = props.onChangeFilter;
-
-
-
+ 
  useEffect(()=>{
   const filtro_copia = {...filtros}
-  //filtrar(filtro_copia);
   props.onChangeFilter(filtro_copia);
+  
  },[filtros])
 
 

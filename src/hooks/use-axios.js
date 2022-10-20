@@ -28,7 +28,7 @@ export const useAxios = (axiosParams) => {
     
   }, [axiosParams, response, error]); // execute once only
   
-  return { response, error, loading};
+  return { response, error, loading, fetchData};
   
 };
 

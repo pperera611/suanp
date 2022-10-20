@@ -33,7 +33,7 @@ const NewExcelPDF = (props)  => {
       </Box>
 
       <Box
-        onClick={props.openAdd}
+        onClick={props.exportexcel}
         sx={{
           display: "flex",
           flexDirection: "row",
@@ -52,7 +52,7 @@ const NewExcelPDF = (props)  => {
         </Fab>
       </Box>
       <Box
-        onClick={props.openAdd}
+        onClick={props.exportpdf}
         sx={{
           display: "flex",
           flexDirection: "row",
