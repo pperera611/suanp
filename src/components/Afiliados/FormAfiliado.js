@@ -1,5 +1,4 @@
 import { useForm, Controller} from "react-hook-form";
-import { useState, useEffect } from "react";
 import TextField from '@mui/material/TextField';
 import Grid from "@mui/material/Grid";
 import Item from "../UI/Item"
@@ -8,9 +7,10 @@ import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Autocomplete from '@mui/material/Autocomplete';
-import DatePicker from "react-datepicker";
+//import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import useAxios from "../../hooks/use-axios";
+//import useAxios from "../../hooks/use-axios";
+import { useAxios, useLazyAxios } from "use-axios-client"; //https://use-axios-client.io/
 import  * as auxiliares from "../../auxiliares/Auxiliares"
 
 /* import DateFnsUtils from "@date-io/date-fns";
@@ -21,6 +21,8 @@ import {
  */
 
 //https://www.paradigmadigital.com/dev/desarrollo-formularios-react/
+const baseURL = 'https://suanp-f6399-default-rtdb.firebaseio.com/';
+
 const patterns = { 
   nombre: /^[A-Za-z]+$/i,
   mail:/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
@@ -37,75 +39,54 @@ const messages = {
   direccion: "Debe introducir una direccion de domicilio"
 };
 
+
+
 export default function FormAfiliado(props) {
-  
-  const [grados, setGrados] = useState([]);
-  const [localidades, setLocalidades] = useState([]);
-  const [unidades, setUnidades] = useState([]);
-  //const [nroSocios, setNroSocios] = useState([]);
- 
-  const dataGrados  = useAxios({
+  //https://use-axios-client.io/
+ const { grados}  = useAxios({  // { data , errorG, loadingG } = useAxios({...
     method: 'get',
-    url: '/grados.json',
+    url: baseURL+'grados.json',
     headers: JSON.stringify({ accept: '*/*' })
   });
-  const dataLocalidades  = useAxios({
+  const { localidades }  = useAxios({
     method: 'get',
-    url: '/localidades.json',
+    url: baseURL+'localidades.json',
     headers: JSON.stringify({ accept: '*/*' })
   });
 
-  const dataUnidades  = useAxios({
+  const { unidades }  = useAxios({
     method: 'get',
-    url: '/unidades.json',
+    url: baseURL+'unidades.json',
     headers: JSON.stringify({ accept: '*/*' })
   });
 
-  useEffect(() =>{
-    if(!dataGrados.error && dataGrados.response) 
-      setGrados(dataGrados.response)
-  },[dataGrados.response, dataGrados.error])
 
-  useEffect(() =>{
-    if(!dataLocalidades.error && dataLocalidades.response) 
-      setLocalidades(dataLocalidades.response)
-  },[dataLocalidades.response, dataLocalidades.error])
-
-  useEffect(() =>{
-    if(!dataUnidades.error && dataUnidades.response) 
-      setUnidades(dataUnidades.response)
-  },[dataUnidades.response, dataUnidades.error])
-
-  useEffect(() =>{
-    if(!dataGrados.error && dataGrados.response) 
-      setGrados(dataGrados.response)
-  },[dataGrados.response, dataGrados.error])
-
-   
   const {register, control, handleSubmit, formState: { errors } } = useForm({mode: "onBlur"});
   
   const dataAfiliados  = useAxios();
-  
-  // const nroCobroIsUnique = (nroCobro) =>{
 
-  //   const dataNroCobroAfiliados  = useAxios({
-  //     method: 'get',
-  //     url: '/afiliados.json',
-  //     headers: JSON.stringify({ accept: '*/*' })
-  //   });
-  //   const nros_cobros=[];  
+  const [getData, { afiliados, errorA, loadingA }] = useLazyAxios({
+    method: 'get',
+    url: baseURL+'afiliados.json',
+    headers: JSON.stringify({ accept: '*/*' })
+  });
   
-  //    for(let i in dataNroCobroAfiliados.response)
-  //       nros_cobros.push(dataNroCobroAfiliados.response[i].nroSocio);
+  const nroCobroIsUnique = (nroCobro) =>{
+    const nros_cobros=[];  
+  
+    for(let i in afiliados)
+      nros_cobros.push(afiliados[i].nroSocio);
 
-  //     return nros_cobros.find(nroCobro);
-  // }
+       return nros_cobros.find(nroCobro);
+  }
+
+
 
   const onSubmit =  (userInfo) => {
       
     dataAfiliados.fetchData({
         method: 'post',
-        url: '/afiliados.json',
+        url: baseURL+'/afiliados.json',
         headers: JSON.stringify({ accept: '*/*' }),
         data:{
           id: 5,
@@ -155,7 +136,7 @@ export default function FormAfiliado(props) {
                   size="small"
                   fullWidth
                   {...register("nroSocio", {
-                    validate: auxiliares.verificarNroCobro, //nroCobroIsUnique,
+                    validate: auxiliares.verificarNroCobro, nroCobroIsUnique,
                    
                     required: messages.required,
                     minLength: {

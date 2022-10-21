@@ -4,26 +4,34 @@ import NuevoAfiliado from "./NuevoAfiliado";
 import Divider from "@mui/material/Divider";
 import { useEffect, useState } from "react";
 import NewExcelPDF from "../UI/NewExcelPDF";
-import useAxios from "../../hooks/use-axios";
+//import useAxios from "../../hooks/use-axios";
 import React from "react";
 import * as XLSX from 'xlsx/xlsx.mjs';
 import jsPDF from 'jspdf'
 import 'jspdf-autotable'
+import { useAxios } from "use-axios-client"; 
 
 const AfiliadosActivos = (props) =>{
   
-  
+  const axios = require('axios').default;
   const [addAfiliado, setAddAfiliado] = useState(false);
   const [data, setData] = useState([]);
   const [listFiltrada, setListFiltrada] = useState([]); 
   
+  const instance = axios.create({
+    baseURL: 'https://suanp-f6399-default-rtdb.firebaseio.com',
+    //authorization: 'Bearer YWxhZGRpbjpvcGVuc2VzYW1l',
+  });
+
   const { response, loading, error } = useAxios({
-    method: 'get',
+    axiosInstance: instance,
     url: '/afiliados.json',
-    headers: JSON.stringify({ accept: '*/*' })
+    //headers: JSON.stringify({ accept: '*/*' })
     });
+
+    console.log(response);
   
-    
+   
   useEffect(() => {
     
     if(!error && response) {
@@ -33,12 +41,12 @@ const AfiliadosActivos = (props) =>{
 
       setData(afiliados);
       setListFiltrada(afiliados);
-      //console.log("entra");
-      
     }
- 
-    //console.log(response);
+      //console.log("entra");
+      //console.log(response);
  }, [response, error]); //supuestamente una vez
+
+ 
 
   const handlerfilterList = (filtros) => { 
       
