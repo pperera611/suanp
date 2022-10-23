@@ -1,4 +1,5 @@
 import { useForm, Controller} from "react-hook-form";
+import {useState, useEffect} from "react";
 import TextField from '@mui/material/TextField';
 import Grid from "@mui/material/Grid";
 import Item from "../UI/Item"
@@ -9,9 +10,9 @@ import Divider from '@mui/material/Divider';
 import Autocomplete from '@mui/material/Autocomplete';
 //import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-//import useAxios from "../../hooks/use-axios";
-import { useAxios, useLazyAxios } from "use-axios-client"; //https://use-axios-client.io/
-import  * as auxiliares from "../../auxiliares/Auxiliares"
+import useAxios from "../../hooks/use-axios";
+//import { useAxios, useLazyAxios } from "use-axios-client"; //https://use-axios-client.io/
+import  {verificarNroCobro}  from "../../auxiliares/Auxiliares"
 
 /* import DateFnsUtils from "@date-io/date-fns";
 import {
@@ -21,7 +22,6 @@ import {
  */
 
 //https://www.paradigmadigital.com/dev/desarrollo-formularios-react/
-const baseURL = 'https://suanp-f6399-default-rtdb.firebaseio.com/';
 
 const patterns = { 
   nombre: /^[A-Za-z]+$/i,
@@ -39,55 +39,76 @@ const messages = {
   direccion: "Debe introducir una direccion de domicilio"
 };
 
-
-
 export default function FormAfiliado(props) {
-  //https://use-axios-client.io/
- const { grados}  = useAxios({  // { data , errorG, loadingG } = useAxios({...
-    method: 'get',
-    url: baseURL+'grados.json',
-    headers: JSON.stringify({ accept: '*/*' })
-  });
-  const { localidades }  = useAxios({
-    method: 'get',
-    url: baseURL+'localidades.json',
-    headers: JSON.stringify({ accept: '*/*' })
-  });
-
-  const { unidades }  = useAxios({
-    method: 'get',
-    url: baseURL+'unidades.json',
-    headers: JSON.stringify({ accept: '*/*' })
-  });
-
-
+ 
   const {register, control, handleSubmit, formState: { errors } } = useForm({mode: "onBlur"});
   
-  const dataAfiliados  = useAxios();
-
-  const [getData, { afiliados, errorA, loadingA }] = useLazyAxios({
+  const [grados, setGrados] = useState([]);
+  const [localidades, setLocalidades] = useState([]);
+  const [unidades, setUnidades] = useState([]);
+  const [afiliados, setAfiliados] = useState([]);
+  const [load_afiliados, setLoadAfiliados] = useState(false);
+  const dataAfiliadoPost  = useAxios();
+  const dataUnidades  = useAxios({
     method: 'get',
-    url: baseURL+'afiliados.json',
-    headers: JSON.stringify({ accept: '*/*' })
+    url: '/unidades.json',
+    headers: ({ accept: '*/*' })
   });
-  
-  const nroCobroIsUnique = (nroCobro) =>{
+  const dataGrados  = useAxios({
+    method: 'get',
+    url: '/grados.json',
+    headers: ({ accept: '*/*' })
+  });
+  const dataLocalidades  = useAxios({
+    method: 'get',
+    url: '/localidades.json',
+    headers: ({ accept: '*/*' })
+  });
+  const dataAfiliados = useAxios({
+    method: 'get',
+    url: '/afiliados.json',
+    headers: ({ accept: '*/*' })
+  });
+
+  useEffect(() =>{
+    if(!dataGrados.error && dataGrados.response) 
+      setGrados(dataGrados.response)
+  },[dataGrados.response, dataGrados.error])
+
+  useEffect(() =>{
+    if(!dataLocalidades.error && dataLocalidades.response) 
+      setLocalidades(dataLocalidades.response)
+  },[dataLocalidades.response, dataLocalidades.error])
+
+  useEffect(() =>{
+    if(!dataUnidades.error && dataUnidades.response) 
+      setUnidades(dataUnidades.response)
+  },[dataUnidades.response, dataUnidades.error])
+
+  useEffect(() =>{
+    if(!dataAfiliados.error && dataAfiliados.response) 
+      setAfiliados(dataAfiliados.response)
+  },[load_afiliados, dataAfiliados.response, dataAfiliados.error])
+
+   const nroCobroIsUnique = (nroCobro) =>{
+
+    setLoadAfiliados(true);
+
     const nros_cobros=[];  
-  
     for(let i in afiliados)
-      nros_cobros.push(afiliados[i].nroSocio);
-
-       return nros_cobros.find(nroCobro);
-  }
-
-
+       nros_cobros.push(afiliados[i].nroSocio);
+    setLoadAfiliados(false);
+    console.log(afiliados);
+    console.log(nros_cobros);
+    return !nros_cobros.includes(nroCobro);
+   }
 
   const onSubmit =  (userInfo) => {
       
-    dataAfiliados.fetchData({
+    dataAfiliadoPost.fetchData({
         method: 'post',
-        url: baseURL+'/afiliados.json',
-        headers: JSON.stringify({ accept: '*/*' }),
+        url: '/afiliados.json',
+        headers: ({ accept: '*/*' }),
         data:{
           id: 5,
           nroSocio: Number(userInfo.nroSocio.substring(0,5)),
@@ -121,7 +142,7 @@ export default function FormAfiliado(props) {
       if (!option._id) option = options.find(op => op._id === option);
       return option;
     };
-  
+    
     return (
       <Box sx={{ p: 2 }}>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -136,7 +157,11 @@ export default function FormAfiliado(props) {
                   size="small"
                   fullWidth
                   {...register("nroSocio", {
-                    validate: auxiliares.verificarNroCobro, nroCobroIsUnique,
+                    validate: 
+                    {
+                      val1: v => verificarNroCobro(v)  || 'El formato del nro no es correcto',
+                      val2: v => !nroCobroIsUnique(v)  || 'Ya existe un afiliado con ese nro de cobro', 
+                    },
                    
                     required: messages.required,
                     minLength: {
@@ -154,7 +179,7 @@ export default function FormAfiliado(props) {
                     
                   })}
                 />
-                {errors.nroSocio && errors.nroSocio.type==="validate" && <p>"El formato de nro de cobro no es correcto"</p>}
+                
                 {errors.nroSocio && <p>{errors.nroSocio.message}</p>}
               </Item>
             </Grid>
