@@ -1,10 +1,12 @@
-import * as React from 'react';
+import React from 'react';
+import { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import TabPanel from "../components/UI/TabPanel";
-import AfiliadosActivos from "../components/Afiliados/AfiliadosActivos";
+import useAxios from "../hooks/use-axios";
+import TablaAfiliados from "../components/Afiliados/TablaAfiliados";
 
 TabPanel.propTypes = {
   children: PropTypes.node,
@@ -22,11 +24,47 @@ function a11yProps(index) {
 export default function Afiliados() {
   
   const [value, setValue] = React.useState(0);
+  const [afiliadosActivos, setAfiliadosActivos] = useState([]);
+  const [afiliadosInactivos, setAfiliadosInactivos] = useState([]);
+
+  const { response, loading, error } = useAxios({
+    method: "get",
+    url: "/afiliados.json",
+    headers: { accept: "*/*" },
+  });
+
+  //console.log(response);
+
+  useEffect(() => {
+
+    if (!error && response) {
+      const af_activos = [];
+      const af_inactivos = [];
+      for (let i in response) {
+        if (response[i].activo)
+          af_activos.push(response[i]);
+        else
+          af_inactivos.push(response[i]);
+      }
+      setAfiliadosActivos(af_activos);
+      setAfiliadosInactivos(af_inactivos);
+      
+    }
+  }, [response, error]); //supuestamente una vez
+
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
+  let mensaje;
+  if (error) {
+    mensaje = <div> Error </div>;
+  }
+  if (loading) {
+    mensaje = <div> Loading...</div>;
+  }
+  
   return (
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -37,10 +75,10 @@ export default function Afiliados() {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <AfiliadosActivos/>
+      {loading || error ? mensaje : <TablaAfiliados lista={afiliadosActivos} />}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Item Two
+      {loading || error ? mensaje : <TablaAfiliados lista={afiliadosInactivos} />}
       </TabPanel>
       <TabPanel value={value} index={2}>
         Item Three
