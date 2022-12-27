@@ -49,7 +49,7 @@ const TablaAfiliados = (props) =>{
 
   return (
     <>
-      <NewExcelPDF openAdd={handlerAddDialogOpen} lista={listFiltrada} />
+      <NewExcelPDF botonNew = {props.activo} openAdd={handlerAddDialogOpen} lista={listFiltrada} />
 
       {addAfiliado && (
         <NuevoAfiliado

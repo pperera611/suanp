@@ -75,10 +75,10 @@ export default function Afiliados() {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-      {loading || error ? mensaje : <TablaAfiliados lista={afiliadosActivos} />}
+      {loading || error ? mensaje : <TablaAfiliados lista={afiliadosActivos} activo ={true}/>}
       </TabPanel>
       <TabPanel value={value} index={1}>
-      {loading || error ? mensaje : <TablaAfiliados lista={afiliadosInactivos} />}
+      {loading || error ? mensaje : <TablaAfiliados lista={afiliadosInactivos} activo ={false}/>}
       </TabPanel>
       <TabPanel value={value} index={2}>
         Item Three

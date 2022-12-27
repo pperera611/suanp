@@ -13,6 +13,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import useAxios from "../../hooks/use-axios";
 //import { useAxios, useLazyAxios } from "use-axios-client"; //https://use-axios-client.io/
 import  {verificarNroCobro}  from "../../auxiliares/Auxiliares"
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 
 /* import DateFnsUtils from "@date-io/date-fns";
 import {
@@ -48,6 +50,8 @@ export default function FormAfiliado(props) {
   const [unidades, setUnidades] = useState([]);
   const [afiliados, setAfiliados] = useState([]);
   const [load_afiliados, setLoadAfiliados] = useState(false);
+  const [checked, setChecked] = useState(true);
+
   const dataAfiliadoPost  = useAxios();
   const dataUnidades  = useAxios({
     method: 'get',
@@ -138,12 +142,14 @@ export default function FormAfiliado(props) {
     const handleClose = () => {
       props.onClose();
     };
-
+    const handleChangeCheck = (event) => {
+      setChecked(event.target.checked);
+    };
     const getOpObj = (option,options) => {
       if (!option._id) option = options.find(op => op._id === option);
       return option;
     };
-    
+    console.log(checked);
     return (
       <Box sx={{ p: 2 }}>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -158,12 +164,15 @@ export default function FormAfiliado(props) {
                   size="small"
                   fullWidth
                   {...register("nroSocio", {
-                    validate: 
-                    {
-                      val1: v => verificarNroCobro(v)  || 'El formato del nro no es correcto',
-                      val2: v => !nroCobroIsUnique(v)  || 'Ya existe un afiliado con ese nro de cobro', 
+                    validate: {
+                      val1: (v) =>
+                        verificarNroCobro(v) ||
+                        "El formato del nro no es correcto",
+                      val2: (v) =>
+                        !nroCobroIsUnique(v) ||
+                        "Ya existe un afiliado con ese nro de cobro",
                     },
-                   
+
                     required: messages.required,
                     minLength: {
                       value: 6,
@@ -177,14 +186,25 @@ export default function FormAfiliado(props) {
                       value: patterns.nroSocio,
                       message: messages.nroSocio,
                     },
-                    
                   })}
                 />
-                
+
                 {errors.nroSocio && <p>{errors.nroSocio.message}</p>}
               </Item>
             </Grid>
-            <Grid item xs={7}></Grid>
+
+            <Grid item xs={2}>
+              <Item>
+                <FormControlLabel
+                  control={
+                    <Checkbox checked={checked} onChange={handleChangeCheck} />
+                  }
+                  label="SUANP"
+                />
+              </Item>
+            </Grid>
+                  
+            <Grid item xs={6}></Grid>
             <Grid item xs={6}>
               <Item>
                 <TextField

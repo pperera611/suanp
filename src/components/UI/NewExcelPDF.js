@@ -56,6 +56,7 @@ const NewExcelPDF = (props)  => {
 
   return (
     <Stack direction="row" spacing={1}>
+      {props.botonNew && (
       <Box
         onClick={props.openAdd}
         sx={{
@@ -74,8 +75,7 @@ const NewExcelPDF = (props)  => {
         <Fab color="secondary" aria-label="add">
           <AddIcon />
         </Fab>
-      </Box>
-
+      </Box>)}
       <Box
         onClick={handlerExportExcel}
         sx={{
