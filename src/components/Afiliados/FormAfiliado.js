@@ -13,8 +13,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import useAxios from "../../hooks/use-axios";
 //import { useAxios, useLazyAxios } from "use-axios-client"; //https://use-axios-client.io/
 import  {verificarNroCobro}  from "../../auxiliares/Auxiliares"
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
+
 
 /* import DateFnsUtils from "@date-io/date-fns";
 import {
@@ -43,16 +42,21 @@ const messages = {
 
 export default function FormAfiliado(props) {
  
+  //props.loadData // si es true significa que vine navegando desde el boton de modificar
+  //props.payload // tiene el nro de cobro del funcionario a modificar
+
+
   const {register, control, handleSubmit, formState: { errors } } = useForm({mode: "onBlur"});
   
   const [grados, setGrados] = useState([]);
   const [localidades, setLocalidades] = useState([]);
   const [unidades, setUnidades] = useState([]);
   const [afiliados, setAfiliados] = useState([]);
+  const [afiliadoEdit, setAfiliadoEdit] = useState([]);
   const [load_afiliados, setLoadAfiliados] = useState(false);
-  const [checked, setChecked] = useState(true);
 
   const dataAfiliadoPost  = useAxios();
+
   const dataUnidades  = useAxios({
     method: 'get',
     url: '/unidades.json',
@@ -90,25 +94,41 @@ export default function FormAfiliado(props) {
   },[dataUnidades.response, dataUnidades.error])
 
   useEffect(() =>{
-    if(!dataAfiliados.error && dataAfiliados.response) 
+    if(!dataAfiliados.error && dataAfiliados.response) {
       setAfiliados(dataAfiliados.response)
-  },[load_afiliados, dataAfiliados.response, dataAfiliados.error])
+      const afiliadosAux = [];
+      for(let i in afiliados)
+        afiliadosAux.push(i,afiliados[i]);
+        if(props.loadData){
+          //console.log(afiliadosAux);
+          const afiliado = afiliadosAux.find(e => e.nroSocio === props.payload);
+          setAfiliadoEdit(afiliado);
+          console.log(afiliado);
+        }
+    }
+  },[load_afiliados, dataAfiliados.response, dataAfiliados.error,props.loadData,props.payload])
 
-   const nroCobroIsUnique = (nroCobro) =>{
+ 
+  
+  
+  const nroCobroIsUnique = (nroCobro) =>{
 
     setLoadAfiliados(true);
 
     const nros_cobros=[];  
     for(let i in afiliados)
        nros_cobros.push(afiliados[i].nroSocio);
+    
     setLoadAfiliados(false);
-    console.log(afiliados);
-    console.log(nros_cobros);
+    //console.log(afiliados);
+    //console.log(nros_cobros);
     return !nros_cobros.includes(nroCobro);
    }
 
   const onSubmit =  (userInfo) => {
       
+    //if alta, 
+    
     dataAfiliadoPost.fetchData({
         method: 'post',
         url: '/afiliados.json',
@@ -134,6 +154,10 @@ export default function FormAfiliado(props) {
 
         },  
       })
+      //sino
+      
+
+
       
       console.log(userInfo);
       
@@ -142,14 +166,14 @@ export default function FormAfiliado(props) {
     const handleClose = () => {
       props.onClose();
     };
-    const handleChangeCheck = (event) => {
-      setChecked(event.target.checked);
-    };
+   
     const getOpObj = (option,options) => {
       if (!option._id) option = options.find(op => op._id === option);
       return option;
     };
-    console.log(checked);
+
+
+
     return (
       <Box sx={{ p: 2 }}>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -158,8 +182,9 @@ export default function FormAfiliado(props) {
               <Item>
                 <TextField
                   id="nroSocio"
+                  //value = {afiliadoEdit!==undefined&&afiliadoEdit.nroSocio}
                   name="nro-socio"
-                  label="Número de Socio"
+                  label={props.loadData?"":"Número de Socio"}
                   variant="outlined"
                   size="small"
                   fullWidth
@@ -193,17 +218,7 @@ export default function FormAfiliado(props) {
               </Item>
             </Grid>
 
-            <Grid item xs={2}>
-              <Item>
-                <FormControlLabel
-                  control={
-                    <Checkbox checked={checked} onChange={handleChangeCheck} />
-                  }
-                  label="SUANP"
-                />
-              </Item>
-            </Grid>
-                  
+                 
             <Grid item xs={6}></Grid>
             <Grid item xs={6}>
               <Item>
@@ -430,7 +445,7 @@ export default function FormAfiliado(props) {
                 <Divider />
                 <DialogActions>
                   <Button onClick={handleClose}>Cancelar</Button>
-                  <Button type="submit">Agregar</Button>
+                  <Button type="submit">{props.loadData?"Modificar":"Agregar"}</Button>
                 </DialogActions>
               </Item>
             </Grid>

@@ -32,6 +32,7 @@ function App(props) {
            <Routes>
              <Route path="/login" element= {!authCtx.isLoggedIn ? <Login/>: <Navigate to="/" replace />} />
              <Route path="/afiliados" element={authCtx.isLoggedIn ? <Dashboard opc={1}/> : <Navigate to="/login"/>} />
+             
              <Route path="/" element={authCtx.isLoggedIn ? <Dashboard opc={2}/> : <Navigate to="/login"/>} />
              
              <Route path="*" element={<Navigate to="/" replace />}/>

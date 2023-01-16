@@ -7,7 +7,13 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import IconsOptions from "../UI/IconsOptions"; 
+import IconButton from '@mui/material/IconButton';
+import Stack from '@mui/material/Stack';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ModificarAfiliado from './ModificarAfiliado';
+
+
+//import IconsOptions from "../UI/IconsOptions"; 
 
 
 const columns = [
@@ -23,12 +29,11 @@ const columns = [
 export default function ListaAfiliados(props) {
 
   const rows = props.lista;
-  /*
+   /*
   const rows = [];
   for(let i in props.lista)
   rows.push(props.lista[i]);
  */
-
      
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(20);
@@ -41,6 +46,8 @@ export default function ListaAfiliados(props) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+ 
 
  //console.log("lista: "+rows);
 
@@ -72,23 +79,31 @@ export default function ListaAfiliados(props) {
           <TableBody>
             {rows
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
+              .map((row) => {              
                 return (
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                     {columns.map((column) => {
                       const value = row[column.id];
+                      //console.log(value);
                       return (
-                        
                         <TableCell key={column.id} align={column.align}>
                           {column.format && typeof value === "number"
                             ? column.format(value)
                             : value}
                         </TableCell>
-                        
                       );
                     })}
-                    <TableCell><IconsOptions/></TableCell>
-                    
+                    <TableCell>
+                      <Stack direction="row" spacing={0}>
+                        <IconButton aria-label="delete">
+                          <DeleteIcon />
+                        </IconButton>
+
+                        <IconButton aria-label="edit">
+                          <ModificarAfiliado nroCobro={row.nroSocio} />
+                        </IconButton>
+                      </Stack>
+                    </TableCell>
                   </TableRow>
                 );
               })}
