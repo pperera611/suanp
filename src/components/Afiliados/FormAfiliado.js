@@ -46,7 +46,10 @@ export default function FormAfiliado(props) {
   //props.payload // tiene el nro de cobro del funcionario a modificar
 
 
-  const {register, control, handleSubmit, formState: { errors }, setValue, setFocus } = useForm({mode: "onBlur"});
+  const {register, control, handleSubmit, formState: { errors }, setValue, setFocus } = 
+  useForm({mode: "onBlur"}, {defaultValues: {
+    nroSocio: ''}
+  });
 
   
   
@@ -115,10 +118,10 @@ export default function FormAfiliado(props) {
         setValue('nroSocio', afiliado.nroSocio);
         setFocus('nroSocio',{ shouldSelect: true })
         setValue('nombre', afiliado.nombre);
-        setFocus('nombre',{ shouldSelect: true })
         setValue('apellido', afiliado.apellido);
       }
       setAfiliados(afiliadosAux);
+        
 
      
     }
@@ -190,54 +193,63 @@ export default function FormAfiliado(props) {
           <Grid container spacing={2}>
             <Grid item xs={4}>
               <Item>
-                <TextField
-                  id="nroSocio"
+                <Controller
                   name="nro-socio"
-                  label={"Número de Socio"}
-                  variant="outlined"
-                  size="small"
-                  
-                  fullWidth
-                  {...register("nroSocio", {
-                    validate: {
-                      val1: (v) =>
-                        verificarNroCobro(v) ||
-                        "El formato del nro no es correcto",
-                      val2: (v) =>
-                        !nroCobroIsUnique(v) ||
-                        "Ya existe un afiliado con ese nro de cobro",
-                    },
-                    
-                    required: messages.required,
-                    minLength: {
-                      value: 6,
-                      message: messages.nroSocio,
-                    },
-                    maxLength: {
-                      value: 6,
-                      message: messages.nroSocio,
-                    },
-                    pattern: {
-                      value: patterns.nroSocio,
-                      message: messages.nroSocio,
-                    },
-                  })}
-                />
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      id="nroSocio"
+                      {...field}
+                      label={"Número de Socio"}
+                      variant="outlined"
+                      size="small"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      {...register("nroSocio", {
+                        validate: {
+                          val1: (v) =>
+                            verificarNroCobro(v) ||
+                            "El formato del nro no es correcto",
+                          val2: (v) =>
+                            !nroCobroIsUnique(v) ||
+                            "Ya existe un afiliado con ese nro de cobro",
+                        },
 
+                        required: messages.required,
+                        minLength: {
+                          value: 6,
+                          message: messages.nroSocio,
+                        },
+                        maxLength: {
+                          value: 6,
+                          message: messages.nroSocio,
+                        },
+                        pattern: {
+                          value: patterns.nroSocio,
+                          message: messages.nroSocio,
+                        },
+                      })}
+                    />
+                  )}
+                />
                 {errors.nroSocio && <p>{errors.nroSocio.message}</p>}
               </Item>
             </Grid>
 
-                 
             <Grid item xs={6}></Grid>
             <Grid item xs={6}>
               <Item>
-                <TextField
-                  id="nombre"
+              <Controller
                   name="nombre"
+                  control={control}
+                  render={({ field }) => (
+                <TextField
+                  {...field}
+                  id="nombre"
                   label="Nombre"
                   variant="outlined"
                   size="small"
+                  InputLabelProps={{ shrink: true }}
                   fullWidth
                   {...register("nombre", {
                     required: messages.required,
@@ -246,6 +258,8 @@ export default function FormAfiliado(props) {
                       message: messages.nombre,
                     },
                   })}
+                />
+                )}
                 />
                 {errors.nombre && <p>{errors.nombre.message}</p>}
               </Item>
@@ -267,6 +281,8 @@ export default function FormAfiliado(props) {
                     },
                   })}
                 />
+
+
                 {errors.apellido && <p>{errors.nombre.message}</p>}
               </Item>
             </Grid>
@@ -455,7 +471,9 @@ export default function FormAfiliado(props) {
                 <Divider />
                 <DialogActions>
                   <Button onClick={handleClose}>Cancelar</Button>
-                  <Button type="submit">{props.loadData?"Modificar":"Agregar"}</Button>
+                  <Button type="submit">
+                    {props.loadData ? "Modificar" : "Agregar"}
+                  </Button>
                 </DialogActions>
               </Item>
             </Grid>
