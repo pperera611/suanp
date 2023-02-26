@@ -46,14 +46,16 @@ export default function FormAfiliado(props) {
   //props.payload // tiene el nro de cobro del funcionario a modificar
 
 
-  const {register, control, handleSubmit, formState: { errors } } = useForm({mode: "onBlur"});
+  const {register, control, handleSubmit, formState: { errors }, setValue, setFocus } = useForm({mode: "onBlur"});
+
+  
   
   const [grados, setGrados] = useState([]);
   const [localidades, setLocalidades] = useState([]);
   const [unidades, setUnidades] = useState([]);
   const [afiliados, setAfiliados] = useState([]);
-  const [afiliadoEdit, setAfiliadoEdit] = useState([]);
-  const [load_afiliados, setLoadAfiliados] = useState(false);
+  //const [afiliadoEdit, setAfiliadoEdit] = useState([]);
+  //const [load_afiliados, setLoadAfiliados] = useState(false);
 
   const dataAfiliadoPost  = useAxios();
 
@@ -94,35 +96,42 @@ export default function FormAfiliado(props) {
   },[dataUnidades.response, dataUnidades.error])
 
   useEffect(() =>{
-    if(!dataAfiliados.error && dataAfiliados.response) {
-      setAfiliados(dataAfiliados.response)
-      const afiliadosAux = [];
-      for(let i in afiliados)
-        afiliadosAux.push(i,afiliados[i]);
-        if(props.loadData){
-          //console.log(afiliadosAux);
-          const afiliado = afiliadosAux.find(e => e.nroSocio === props.payload);
-          setAfiliadoEdit(afiliado);
-          console.log(afiliado);
-        }
-    }
-  },[load_afiliados, dataAfiliados.response, dataAfiliados.error,props.loadData,props.payload])
 
+    if(!dataAfiliados.error && dataAfiliados.response) {
+      
+      let afiliadosAux = [];
+      for(let i in dataAfiliados.response)
+        afiliadosAux.push(dataAfiliados.response[i]);
+      
+      if(props.loadData){ // si quiero modificar....
+        //obtengo datos del afiliado
+        let afiliado = afiliadosAux.find(e => e.nroSocio === props.payload);
+        //console.log(afiliado);
+        //setAfiliadoEdit(afiliado);
+        //tengo que sacar el afiliado de la lista para que no me haga la validacion de que ya existe el nro de cobro
+        afiliadosAux = afiliadosAux.filter(af => af.nroSocio !== props.payload)
+        console.log(afiliadosAux);
+        //console.log(afiliado)
+        setValue('nroSocio', afiliado.nroSocio);
+        setFocus('nroSocio',{ shouldSelect: true })
+        setValue('nombre', afiliado.nombre);
+        setFocus('nombre',{ shouldSelect: true })
+        setValue('apellido', afiliado.apellido);
+      }
+      setAfiliados(afiliadosAux);
+
+     
+    }
+  },[dataAfiliados.response, dataAfiliados.error,props.loadData,props.payload,setValue])
  
   
-  
   const nroCobroIsUnique = (nroCobro) =>{
-
-    setLoadAfiliados(true);
-
-    const nros_cobros=[];  
-    for(let i in afiliados)
-       nros_cobros.push(afiliados[i].nroSocio);
     
-    setLoadAfiliados(false);
-    //console.log(afiliados);
-    //console.log(nros_cobros);
-    return !nros_cobros.includes(nroCobro);
+    let a = afiliados.find(e => e.nroSocio === Number(nroCobro));
+    if (a!==undefined)
+        return true 
+
+    return false;
    }
 
   const onSubmit =  (userInfo) => {
@@ -172,6 +181,7 @@ export default function FormAfiliado(props) {
       return option;
     };
 
+    //const nro_socio = useRef();
 
 
     return (
@@ -182,11 +192,11 @@ export default function FormAfiliado(props) {
               <Item>
                 <TextField
                   id="nroSocio"
-                  //value = {afiliadoEdit!==undefined&&afiliadoEdit.nroSocio}
                   name="nro-socio"
-                  label={props.loadData?"":"Número de Socio"}
+                  label={"Número de Socio"}
                   variant="outlined"
                   size="small"
+                  
                   fullWidth
                   {...register("nroSocio", {
                     validate: {
@@ -197,7 +207,7 @@ export default function FormAfiliado(props) {
                         !nroCobroIsUnique(v) ||
                         "Ya existe un afiliado con ese nro de cobro",
                     },
-
+                    
                     required: messages.required,
                     minLength: {
                       value: 6,
